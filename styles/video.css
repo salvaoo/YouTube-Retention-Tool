@@ -1,0 +1,42 @@
+@tailwind components;
+
+@layer components {
+  .video {
+   @apply w-full h-[425];
+  }
+
+  .controlsContainer {
+    /* @apply flex flex-col items-center w-full bg-transparent py-0 px-4 z-20 -mt-12; */
+    @apply absolute left-2/4 top-2/4;
+    transform: translate(-50%, -50%);
+  }
+
+  .controls {
+    @apply flex items-center justify-evenly m-auto;
+  }
+
+  .controlsIcon {
+    @apply w-12 h-12 cursor-pointer text-white bg-black rounded-full p-2;
+  }
+
+  .controlsIcon--small {
+    @apply w-10 h-10 cursor-pointer ml-20 mr-20 text-white bg-black rounded-full p-2;
+  }
+
+
+  .timecontrols {
+    @apply flex items-center justify-evenly absolute bottom-16 w-full px-10;
+  }
+
+  .time_progressbarContainer {
+    @apply bg-gray-500 rounded-2xl w-full h-1 z-30 relative my-0 mx-5;
+  }
+
+  .time_progressBar {
+    @apply rounded-2xl h-full;
+  }
+
+  .controlsTime {
+    @apply text-white;
+  }
+}
