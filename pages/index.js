@@ -6,10 +6,11 @@ import { HiPlus } from "react-icons/hi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import User from "../components/User";
 import React from "react";
-import SelectVideo from "../components/SelectVideo";
+import RetentionTool from "../components/RetentionTool";
 
 
 export default function Home({ session }) {
+
   const [numVideo, setNumVideo] = useState(1);
   const [loading, setLoading] = useState(false);
   const [videos, setVideos] = useState();
@@ -38,10 +39,16 @@ export default function Home({ session }) {
       };
     }
 
-    const url = `/api/youtube/video?id=${inputs[1]}${
+    // const url = `/api/youtube/video?id=${inputs[1]}${
+    //   numVideo === 2 ? `&id2=${inputs[2]}` : ""
+    // }`;
+    const url = `/api/youtube/analytics?id=${inputs[1]}${
       numVideo === 2 ? `&id2=${inputs[2]}` : ""
     }`;
+
     const res = await fetch(url).then((res) => res.json());
+
+    console.log(res);
 
     setVideos(res);
     setLoading(false);
@@ -97,8 +104,7 @@ export default function Home({ session }) {
       </main>
 
       {/* CONTENT */}
-      {videos ? <SelectVideo videos={videos} /> : ''}
-
+      {videos ? <RetentionTool videos={videos} /> : ''}
     </div>
   );
 }

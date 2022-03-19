@@ -5,6 +5,8 @@ import logo from "./../public/YouTube-logo.png";
 
 
 function login({ providers }) {
+
+  console.log({providers});
   
   return (
     <div className="flex flex-col items-center bg-white min-h-screen w-full justify-center">
