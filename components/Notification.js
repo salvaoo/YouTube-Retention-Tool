@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useRecoilState } from "recoil";
-import { notificationState } from "../atoms/NotificationAtom";
+import { notificationState } from "../atoms/notificationAtom";
 
 function Notification({ code, message, reason, recommended }) {
   const [notification, setNotification] = useRecoilState(notificationState);

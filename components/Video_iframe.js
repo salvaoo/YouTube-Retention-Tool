@@ -1,6 +1,6 @@
 import YouTube from 'react-youtube';
 import { useRecoilState } from "recoil";
-import { videoCurrentTimeState, videoTimeState } from "../atoms/VideoStateAtom";
+import { videoCurrentTimeState, videoTimeState } from "../atoms/videoStateAtom";
 
 function Video_iframe({ src, color }) {
   const [videoCurrentTime, setVideoCurrentTime] = useRecoilState(videoCurrentTimeState);

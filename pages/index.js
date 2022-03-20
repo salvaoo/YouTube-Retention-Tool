@@ -9,7 +9,7 @@ import React from "react";
 import RetentionTool from "../components/RetentionTool";
 import Notification from "../components/Notification"
 import { useRecoilState } from "recoil";
-import { notificationState } from "../atoms/NotificationAtom";
+import { notificationState } from "../atoms/notificationAtom";
 
 export default function Home({ session }) {
 

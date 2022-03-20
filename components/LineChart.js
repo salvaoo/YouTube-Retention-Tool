@@ -2,7 +2,7 @@ import Chart from "chart.js/auto";
 // import { getRelativePosition } from "chart.js/helpers";
 import { useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
-import { videoCurrentTimeState, videoTimeState } from "../atoms/VideoStateAtom";
+import { videoCurrentTimeState, videoTimeState } from "../atoms/videoStateAtom";
 import moment from "moment";
 import "chartjs-adapter-moment";
 
