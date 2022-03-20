@@ -6,7 +6,7 @@ function Head_template({ title, description_content, icon }) {
   useEffect(() => {
     let host = window.location.hostname;
     if (host === "localhost") {
-      window[`ga-disable-${process.env.GOOGLE_ANALYTICS}`] = true;
+      window[`ga-disable-${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`] = true;
       console.log('GA disabled');
     }else {
       console.log('GA enable');
