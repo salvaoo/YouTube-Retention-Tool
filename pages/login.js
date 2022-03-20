@@ -1,7 +1,7 @@
 import { getProviders, signIn } from "next-auth/react"
 import Head from '../components/Head_template'
 import Image from 'next/image'
-import logo from "../public/youtube-logo.png";
+import logo from "../public/youlogo.png";
 
 
 function login({ providers }) {
