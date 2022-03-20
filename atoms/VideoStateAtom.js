@@ -9,4 +9,3 @@ export const videoTimeState = atom({
   key: "videoTimeState", 
   default: 0,
 })
-

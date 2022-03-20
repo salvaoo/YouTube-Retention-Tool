@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import LineChart from "./LineChart";
-// import Video from "./Video";
 import Video_iframe from "./Video_iframe";
 import { Switch } from "@headlessui/react";
 

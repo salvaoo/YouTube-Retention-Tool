@@ -4,5 +4,3 @@ export const notificationState = atom({
   key: "notificationState", 
   default: '',
 })
-
-
