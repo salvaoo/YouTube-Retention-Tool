@@ -129,25 +129,6 @@ function LineChart({
 
     console.log({ absoluteTime });
 
-    // if (numVideos === 1) {
-    //   if (absoluteTime === true) {
-    //     console.log("HOLA");
-    //     matriz.map((m)=> (
-    //       console.log(m)
-    //     ))
-    //   }else {
-    //     Array.from(Array(videoTime).keys())
-    //   }
-    // }else {
-    //   if (absoluteTime === true) {
-    //     matriz.map((m)=> (
-    //       console.log(m.percentage)
-    //     ))
-    //   }else {
-    //     Array.from(Array(videoTime).keys())
-    //   }
-    // }
-
     const labels =
       numVideos === 1
         ? Array.from(Array(videoTime).keys())
@@ -210,8 +191,7 @@ function LineChart({
         plugins: {
           title: {
             display: true,
-            text:
-              numVideos === 1 ? "VIDEO ANALYTICS" : "VIDEOS ANALYTICS",
+            text: numVideos === 1 ? "VIDEO ANALYTICS" : "VIDEOS ANALYTICS",
           },
         },
         scales: {
@@ -229,19 +209,18 @@ function LineChart({
                   if (index == half_time_seconds) {
                     return half_time_string;
                   }
-                  if(index == (full_time_seconds - 1)){
+                  if (index == full_time_seconds - 1) {
                     return full_time_string;
                   }
-                }else {
+                } else {
                   if (index == 0) {
-                    return "0%"
+                    return "0%";
                   }
                   if (index == half_time_seconds) {
-  
-                    return '50%'
+                    return "50%";
                   }
-                  if(index == (full_time_seconds - 1)){
-                    return '100%'
+                  if (index == full_time_seconds - 1) {
+                    return "100%";
                   }
                 }
               },
