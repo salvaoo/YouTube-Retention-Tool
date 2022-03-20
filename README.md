@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Vaxxed Doggos - YouTube Retention Tool
 
 YouTubers are always looking for ways to improve their content. Two things are important to determine if a video is going to go viral or not: click-through rate and watch time. Today, we’re going to be building an app that helps YouTubers create better videos by showing them which parts of their videos are the most engaging for their audience.
@@ -8,7 +6,7 @@ YouTubers are always looking for ways to improve their content. Two things are i
 
 First, download the project: 
 ```bash 
-git clone https://github.com/salvaoo/YouTube-Retention-Tool---Hackathon.git
+git clone https://github.com/salvaoo/YouTube-Retention-Tool-VaxxedDoggos.git
 ```
 
 ```bash
