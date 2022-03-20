@@ -1,16 +1,5 @@
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-// } from "chart.js";
-// import { Line } from "react-chartjs-2";
 import Chart from "chart.js/auto";
-import { getRelativePosition } from "chart.js/helpers";
+// import { getRelativePosition } from "chart.js/helpers";
 import { useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
 import { videoCurrentTimeState, videoTimeState } from "../atoms/VideoStateAtom";
@@ -51,138 +40,82 @@ function LineChart({
     }
 
     return `${hours > 0 ? `${hours}:` : ""}${minutes}:${seconds}`;
-    // return {
-    //   hours: hours,
-    //   minutes: minutes,
-    //   seconds: seconds,
-    // };
   }
+  // -----------------------------------
+
+  // --- Function to create a matriz ---
+  const createMatriz = (matriz, v_analytics, v_time) => {
+    let t_video = v_time / 100;
+    let l = t_video;
+    let row = 0;
+    for (let index = 0; index < v_time; index++) {
+      if (index <= l) {
+        matriz.push({
+          x: l,
+          y: v_analytics[row][1] >= 1 ? 100 : v_analytics[row][1] * 100,
+          percentage: `${row}%`,
+        });
+      } else {
+        l = l + t_video;
+        row++;
+        matriz.push({
+          x: l,
+          y: v_analytics[row][1] >= 1 ? 100 : v_analytics[row][1] * 100,
+          percentage: `${row}%`,
+        });
+      }
+    }
+
+    return matriz;
+  };
   // ----------------------------------
 
   // --- Set the X values for chart ---
-  let half_time = 0;
-  let full_time = 0;
+  let half_time_string = 0;
+  let half_time_seconds = 0;
+  let full_time_string = 0;
+  let full_time_seconds = 0;
   let duration_1 = 0;
   let duration_2 = 0;
 
   if (numVideos === 1) {
-    half_time = convertHMSrString(videoTime / 2);
-    full_time = convertHMSrString(videoTime);
+    half_time_string = convertHMSrString(videoTime / 2);
+    full_time_string = convertHMSrString(videoTime);
+    half_time_seconds = parseInt(videoTime / 2);
+    full_time_seconds = parseInt(videoTime);
   } else {
     duration_1 = moment.duration(duration[0]).asSeconds();
     duration_2 = moment.duration(duration[1]).asSeconds();
 
     if (duration_1 > duration_2) {
-      half_time = convertHMSrString(duration_1 / 2);
-      full_time = convertHMSrString(duration_1);
+      half_time_string = convertHMSrString(duration_1 / 2);
+      full_time_string = convertHMSrString(duration_1);
+      half_time_seconds = parseInt(duration_1 / 2);
+      full_time_seconds = parseInt(duration_1);
     } else {
-      half_time = convertHMSrString(duration_2 / 2);
-      full_time = convertHMSrString(duration_2);
+      half_time_string = convertHMSrString(duration_2 / 2);
+      full_time_string = convertHMSrString(duration_2);
+      half_time_seconds = parseInt(duration_2 / 2);
+      full_time_seconds = parseInt(duration_2);
     }
   }
 
-  console.log({ half_time });
-  console.log({ full_time });
-  // -------------------------------
+  console.log({ half_time_string });
+  console.log({ full_time_string });
+  // -----------------------------------
 
   // --- Calculate values and params ---
   let matriz = [];
   let matriz_2 = [];
 
-  // console.log({videoAnalytics});
-
   if (numVideos === 1) {
     // Matriz video:
-    matriz.push({
-      x: 0,
-      y: videoAnalytics[0][1] >= 1 ? 100 : videoAnalytics[0][1] * 100,
-      percentage: "0%",
-    });
-    let t_video = videoTime / 100;
-    let l = t_video;
-    let row = 0;
-    for (let index = 1; index < videoTime; index++) {
-      if (index <= l) {
-        matriz.push({
-          x: l,
-          y: videoAnalytics[row][1] >= 1 ? 100 : videoAnalytics[row][1] * 100,
-          percentage: `${row}%`,
-        });
-      } else {
-        l = l + t_video;
-        row++;
-        matriz.push({
-          x: l,
-          y: videoAnalytics[row][1] >= 1 ? 100 : videoAnalytics[row][1] * 100,
-          percentage: `${row}%`,
-        });
-      }
-    }
+    matriz = createMatriz(matriz, videoAnalytics, videoTime);
   } else {
     // Matriz video 1:
-    matriz.push({
-      x: 0,
-      y: videoAnalytics[0][0][1] >= 1 ? 100 : videoAnalytics[0][0][1] * 100,
-      percentage: "0%",
-    });
-    let t_video = duration_1 / 100;
-    let l = t_video;
-    let row = 0;
-    for (let index = 1; index < duration_1; index++) {
-      if (index <= l) {
-        matriz.push({
-          x: l,
-          y:
-            videoAnalytics[0][row][1] >= 1
-              ? 100
-              : videoAnalytics[0][row][1] * 100,
-          percentage: `${row}%`,
-        });
-      } else {
-        l = l + t_video;
-        row++;
-        matriz.push({
-          x: l,
-          y:
-            videoAnalytics[0][row][1] >= 1
-              ? 100
-              : videoAnalytics[0][row][1] * 100,
-          percentage: `${row}%`,
-        });
-      }
-    }
+    matriz = createMatriz(matriz, videoAnalytics[0], duration_1);
     // Matriz video 2:
-    matriz_2.push({
-      x: 0,
-      y: videoAnalytics[1][0][1] >= 1 ? 100 : videoAnalytics[1][0][1] * 100,
-      percentage: "0%",
-    });
-    t_video = duration_2 / 100;
-    l = t_video;
-    row = 0;
-    for (let index = 1; index < duration_2; index++) {
-      if (index <= l) {
-        matriz_2.push({
-          x: l,
-          y:
-            videoAnalytics[1][row][1] >= 1
-              ? 100
-              : videoAnalytics[1][row][1] * 100,
-          percentage: `${row}%`,
-        });
-      } else {
-        l = l + t_video;
-        row++;
-        matriz_2.push({
-          x: l,
-          y:
-            videoAnalytics[1][row][1] >= 1
-              ? 100
-              : videoAnalytics[1][row][1] * 100,
-          percentage: `${row}%`,
-        });
-      }
-    }
+    matriz_2 = createMatriz(matriz_2, videoAnalytics[1], duration_2);
   }
 
   console.log({ matriz });
@@ -223,7 +156,7 @@ function LineChart({
         : Array.from(Array(duration_2).keys());
 
     const data = {
-      labels: labels,
+      labels,
       datasets:
         numVideos === 1
           ? [
@@ -231,13 +164,13 @@ function LineChart({
                 label: videoName,
                 borderColor: color,
                 backgroundColor: color,
-                borderWidth: 2,
                 tension: 0.3,
                 data: matriz.map((value) => ({
                   x: value.x,
                   y: value.y,
                 })),
-                pointRadius: 1,
+                pointRadius: 0,
+                borderWidth: 2,
               },
             ]
           : [
@@ -250,6 +183,8 @@ function LineChart({
                   x: value.x,
                   y: value.y,
                 })),
+                pointRadius: 0,
+                borderWidth: 2,
               },
               {
                 label: videoName[1],
@@ -260,16 +195,13 @@ function LineChart({
                   x: value.x,
                   y: value.y,
                 })),
+                pointRadius: 0,
+                borderWidth: 2,
               },
             ],
     };
 
     console.log({ data });
-
-    // const config = {
-    //   type: "line",
-    //   data: data
-    // };
 
     const config = {
       type: "line",
@@ -279,25 +211,43 @@ function LineChart({
           title: {
             display: true,
             text:
-              numVideos === 1 ? videoName : `${videoName[0]} | ${videoName[1]}`,
+              numVideos === 1 ? "VIDEO ANALYTICS" : "VIDEOS ANALYTICS",
           },
         },
         scales: {
-          // x: {
-          //   type: "time",
-          //   time: {
-          //     unit: 'second',
-          //     displayFormats: {
-          //       quarter: "mm:ss",
-          //     },
-          //   },
-          //   title: {
-          //     display: true,
-          //     text: "Time",
-          //   },
-          // },
+          x: {
+            grid: {
+              color: "rgba(0, 0, 0, 0)",
+            },
+            ticks: {
+              // Include a dollar sign in the ticks
+              callback: function (value, index, ticks) {
+                if (absoluteTime === true) {
+                  if (index == 0) {
+                    return "0:00";
+                  }
+                  if (index == half_time_seconds) {
+                    return half_time_string;
+                  }
+                  if(index == (full_time_seconds - 1)){
+                    return full_time_string;
+                  }
+                }else {
+                  if (index == 0) {
+                    return "0%"
+                  }
+                  if (index == half_time_seconds) {
+  
+                    return '50%'
+                  }
+                  if(index == (full_time_seconds - 1)){
+                    return '100%'
+                  }
+                }
+              },
+            },
+          },
           y: {
-            // display: false,
             title: {
               display: true,
               text: "Percentage (%)",
@@ -311,96 +261,12 @@ function LineChart({
     return function cleanup() {
       myLineChart.destroy();
     };
-  });
-
-  // ChartJS.register(
-  //   CategoryScale,
-  //   LinearScale,
-  //   PointElement,
-  //   LineElement,
-  //   Title,
-  //   Tooltip,
-  //   Legend
-  // );
-
-  // const labels = [, half_time, full_time];
-  // const options = {
-  //   spanGaps: false,
-  //   responsive: true,
-  //   interaction: {
-  //     mode: "index",
-  //     intersect: false,
-  //   },
-  //   stacked: true,
-  //   plugins: {
-  //     title: {
-  //       display: true,
-  //       text: numVideos === 1 ? videoName : `${videoName[0]} | ${videoName[1]}`,
-  //     },
-  //   },
-  //   scales: {
-  //     x: {
-  //       type: "time",
-  //       time: {
-  //         unit: "second",
-  //       },
-  //     },
-  //     y: {
-  //       min: 0,
-  //       max: 100,
-  //       type: "linear",
-  //       display: true,
-  //       position: "right",
-  //       ticks: {
-  //         stepSize: 33,
-  //       },
-  //     },
-  //   },
-  // };
-  // const data = {
-  //   labels,
-  //   datasets:
-  //     numVideos === 1
-  //       ? [
-  //           {
-  //             label: videoName,
-  //             data: ["50", "20", "10", "40", "20", "30", "20"],
-  //             borderColor: color,
-  //             backgroundColor: color,
-  //             // yAxisID: "y",
-  //             tension: 0.2,
-  //           },
-  //         ]
-  //       : [
-  //           {
-  //             label: videoName[0],
-  //             borderColor: color[0],
-  //             backgroundColor: color[0],
-  //             yAxisID: "y",
-  //             tension: 0.2,
-  //             data: matriz.map((value) => ({
-  //               x: value.x,
-  //               y: value.y,
-  //             })),
-  //           },
-  //           {
-  //             label: videoName[1],
-  //             borderColor: color[1],
-  //             backgroundColor: color[1],
-  //             yAxisID: "y",
-  //             tension: 0.2,
-  //             data: matriz_2.map((value) => ({
-  //               x: value.x,
-  //               y: value.y,
-  //             })),
-  //           },
-  //         ],
-  // };
+  }, [absoluteTime, videoTime]);
 
   return (
     <div>
       {/* <Line options={options} data={data} /> */}
-      <canvas id="myChart" ref={canvasEl} height="100" />
+      <canvas id="myChart" ref={canvasEl} />
     </div>
   );
 }

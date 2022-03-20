@@ -52,8 +52,6 @@ export default async (req, res) => {
                   token: session.accessToken
                 }
 
-                console.log(data);
-
                 const video_analytics = await getVideoAnalytics(data);
                 const video = await getVideo(data);
 

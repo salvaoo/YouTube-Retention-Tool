@@ -25,7 +25,7 @@ function login({ providers }) {
 
       {Object.values(providers).map((provider) => (
         <div key={provider.name}>
-          <button className="bg-red-500 text-white px-8 py-4 rounded-2xl hover:border-red-500 hover:border-2 transition-all ease-in-out duration-300 hover:text-red-500 hover:bg-white" onClick={() => signIn(provider.id, { callbackUrl: "/" })}>Login with {provider.name}</button>
+          <button className="bg-red-500 text-white px-8 py-4 rounded-2xl hover:border-red-500 hover:border-2 transition-all ease-in-out duration-300 hover:text-red-500 hover:bg-white" onClick={() => signIn(provider.id, { callbackUrl: "/" })}>Login with YouTube</button>
         </div>
       ))}
     </div>

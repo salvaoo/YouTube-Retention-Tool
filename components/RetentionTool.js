@@ -98,7 +98,7 @@ function RetentionTool({ videos }) {
           
           <p><span className={`${!enabledSW ? 'font-bold' : 'text-gray-400'} transition ease-in-out duration-200`}>Absolute Time Elapse</span> | <span className={`${enabledSW ? 'font-bold' : 'text-gray-400'} transition ease-in-out duration-200`}>Elapse Time Porcentage</span></p>
         </div>
-        <div className="pt-10 w-3/5">
+        <div className="pt-10 w-8/12">
           <LineChart
             videoName={
               videos.num === 1

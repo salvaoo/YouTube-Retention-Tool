@@ -7,13 +7,16 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import User from "../components/User";
 import React from "react";
 import RetentionTool from "../components/RetentionTool";
-
+import Notification from "../components/Notification"
+import { useRecoilState } from "recoil";
+import { notificationState } from "../atoms/NotificationAtom";
 
 export default function Home({ session }) {
 
   const [numVideo, setNumVideo] = useState(1);
   const [loading, setLoading] = useState(false);
   const [videos, setVideos] = useState();
+  const [notification, setNotification] = useRecoilState(notificationState);
 
   useEffect(() => {
     const button = document.querySelectorAll("button");
@@ -48,10 +51,37 @@ export default function Home({ session }) {
 
     const res = await fetch(url).then((res) => res.json());
 
-    console.log(res);
-
-    setVideos(res);
-    setLoading(false);
+    console.log(res.videos_analytics[1]);
+    
+    if (res.videos_analytics[1].error) {
+      setLoading(false);
+      setNotification(
+        <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">
+          <Notification
+            code={res.videos_analytics[1].error.code}
+            message={res.videos_analytics[1].error.errors[0].message}
+            reason={res.videos_analytics[1].error.errors[0].reason}
+            recommended={`Log out and log in again`}
+          />
+        </ul>
+      )
+    }else {
+      setLoading(false);
+      if (res.videos_analytics[1].rows.length === 0) {
+        setNotification(
+          <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5 w-4/12">
+            <Notification
+              code={404}
+              message={`Sorry, something is wrong in your request`}
+              reason={`errorID`}
+              recommended={`Try another YouTube video, please remember you only can use videos from your own channel`}
+            />
+          </ul>
+        )
+      }else {
+        setVideos(res);
+      }
+    }
   };
 
   return (
@@ -105,6 +135,8 @@ export default function Home({ session }) {
 
       {/* CONTENT */}
       {videos ? <RetentionTool videos={videos} /> : ''}
+
+      {notification ? notification : ''}
     </div>
   );
 }
