@@ -27,8 +27,8 @@ function LineChart({
 
   useEffect(() => {
     const graph = Chart.getChart(canvasEl.current.getContext("2d"))
-    graph?.config._config.options.plugins.timeLine.xPosition = videoCurrentTime;
-    graph?.update();
+    graph.config._config.options.plugins.timeLine.xPosition = videoCurrentTime;
+    graph.update();
 
   }, [videoCurrentTime])
 
