@@ -25,13 +25,6 @@ function LineChart({
   // const [graph, setGraph] = useState();
   // -------------------------------------------------------
 
-  useEffect(() => {
-    const graph = Chart.getChart(canvasEl.current.getContext("2d"))
-    graph.config._config.options.plugins.timeLine.xPosition = videoCurrentTime;
-    graph.update();
-
-  }, [videoCurrentTime])
-
   // --- Function for get the time (format) from seconds ---
   function convertHMSrString(time) {
     const sec = parseInt(time, 10);
@@ -290,6 +283,13 @@ function LineChart({
     };
     // -----------------------------
   }, [videoTime, absoluteTime]);
+
+  useEffect(() => {
+    const graph = Chart.getChart(canvasEl.current.getContext("2d"))
+    graph.config._config.options.plugins.timeLine.xPosition = videoCurrentTime;
+    graph.update();
+
+  }, [videoCurrentTime])
 
   return (
     <div>
