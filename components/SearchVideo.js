@@ -56,6 +56,8 @@ function SearchVideo() {
     }
   };
 
+  console.log({sVideos});
+
   return (
     <div className="relative">
       <form onSubmit={searchVideos}>
@@ -73,7 +75,7 @@ function SearchVideo() {
         </div>
 
         {sVideos ? (
-          <div className="grid grid-cols-3 gap-5 m-auto w-3/4 bottom-0 shadow-2xl bg-gray-200 rounded-2xl p-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5 m-auto w-11/12	 md:w-3/4 bottom-0 shadow-2xl bg-gray-200 rounded-2xl p-5">
             {sVideos.map((item) => (
               <ItemSearch key={item.etag} item={item} />
             ))}

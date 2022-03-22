@@ -7,14 +7,13 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import User from "../components/User";
 import React from "react";
 import RetentionTool from "../components/RetentionTool";
-import Notification from "../components/Notification"
+import Notification from "../components/Notification";
 import { useRecoilState } from "recoil";
 import { notificationState } from "../atoms/notificationAtom";
 import Footer from "../components/Footer";
 import SearchVideo from "../components/SearchVideo";
 
 export default function Home({ session }) {
-
   const [numVideo, setNumVideo] = useState(1);
   const [loading, setLoading] = useState(false);
   const [videos, setVideos] = useState();
@@ -53,21 +52,34 @@ export default function Home({ session }) {
 
     const res = await fetch(url).then((res) => res.json());
 
-    console.log({res});
-    
+    console.log({ res });
+
     if (res.videos_analytics[1].error) {
       setLoading(false);
-      setNotification(
-        <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">
-          <Notification
-            code={res.videos_analytics[1].error.code}
-            message={res.videos_analytics[1].error.errors[0].message}
-            reason={res.videos_analytics[1].error.errors[0].reason}
-            recommended={`Log out and log in again`}
-          />
-        </ul>
-      )
-    }else {
+      if (res.videos_analytics[1].error.code === 400) {
+        setNotification(
+          <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">
+            <Notification
+              code={res.videos_analytics[1].error.code}
+              message={res.videos_analytics[1].error.errors[0].message}
+              reason={res.videos_analytics[1].error.errors[0].reason}
+              recommended={`Try to insert a valid URL`}
+            />
+          </ul>
+        );
+      } else {
+        setNotification(
+          <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">
+            <Notification
+              code={res.videos_analytics[1].error.code}
+              message={res.videos_analytics[1].error.errors[0].message}
+              reason={res.videos_analytics[1].error.errors[0].reason}
+              recommended={`Log out and log in again`}
+            />
+          </ul>
+        );
+      }
+    } else {
       setLoading(false);
       if (res.videos_analytics[1].rows.length === 0) {
         setNotification(
@@ -79,8 +91,8 @@ export default function Home({ session }) {
               recommended={`Try another YouTube video, please remember you only can use videos from your own channel`}
             />
           </ul>
-        )
-      }else {
+        );
+      } else {
         setVideos(res);
       }
     }
@@ -96,7 +108,7 @@ export default function Home({ session }) {
 
       <User />
 
-      <main className={`${videos ? 'hidden' : ''} text-center py-10 h-screen`}>
+      <main className={`${videos ? "hidden" : ""} text-center py-10 h-screen`}>
         <h1 className="text-4xl font-bold">YouTube Retention Tool</h1>
         <h3 className="text-xl my-4">Add your video links here:</h3>
 
@@ -123,7 +135,7 @@ export default function Home({ session }) {
             )}
           </button>
         </form>
-        <div className="mt-5 absolute bottom-5 right-5 group transition-all duration-300 hover:scale-105">
+        <div className="mt-5 fixed bottom-5 right-5 group transition-all duration-300 hover:scale-105 z-10">
           <button
             className="font-bold text-white bg-black p-3 rounded-lg mt-5 flex items-center gap-2"
             onClick={() => numVideo < 2 && setNumVideo(numVideo + 1)}
@@ -137,11 +149,11 @@ export default function Home({ session }) {
       </main>
 
       {/* CONTENT */}
-      {videos ? <RetentionTool videos={videos} /> : ''}
+      {videos ? <RetentionTool videos={videos} /> : ""}
 
-      {notification ? notification : ''}
+      {notification ? notification : ""}
 
-      {videos ? <Footer /> : ''}
+      {videos ? <Footer /> : ""}
     </div>
   );
 }
@@ -155,9 +167,6 @@ export async function getServerSideProps(context) {
     },
   };
 }
-
-
-
 
 // curl \
 //   'https://youtube.googleapis.com/youtube/v3/search?part=snippet&forMine=true&key=AIzaSyBlkQVlN2VjTBTI1YuluGB4YY6DhKwEVhI' \
