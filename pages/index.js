@@ -133,7 +133,7 @@ export default function Home({ session }) {
           </button>
         </div>
 
-        {/* <SearchVideo /> */}
+        <SearchVideo />
       </main>
 
       {/* CONTENT */}

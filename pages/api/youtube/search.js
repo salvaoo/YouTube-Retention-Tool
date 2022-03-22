@@ -4,7 +4,7 @@ export default async (req, res) => {
   const session = await getSession({ req });
 
   const getSearch = async (data) => {
-    const url = `https://youtube.googleapis.com/youtube/v3/search?q=${data.query}&part=${data.part.replace(',','%2C')}&forMine=${data.forMine}&key=${data.key}`;
+    const url = `https://youtube.googleapis.com/youtube/v3/search?q=${data.query}&part=${data.part.replace(',','%2C')}&forMine=${data.forMine}&maxResults=${data.limit}&key=${data.key}`;
     const search = await fetch(url, {
       headers: new Headers({
         'Authorization': `Bearer ${data.token}`, 
@@ -32,6 +32,7 @@ export default async (req, res) => {
                 query: params.q,
                 part: "id,snippet",
                 forMine: 'false',
+                limit: '6',
                 key: process.env.GOOGLE_API_KEY,
                 token: session.accessToken
               }
