@@ -11,6 +11,7 @@ import Notification from "../components/Notification"
 import { useRecoilState } from "recoil";
 import { notificationState } from "../atoms/notificationAtom";
 import Footer from "../components/Footer";
+import SearchVideo from "../components/SearchVideo";
 
 export default function Home({ session }) {
 
@@ -26,7 +27,7 @@ export default function Home({ session }) {
     });
   }, [loading]);
 
-  const searchVideo = async (event) => {
+  const sendVideos = async (event) => {
     event.preventDefault();
 
     setLoading(true);
@@ -52,7 +53,7 @@ export default function Home({ session }) {
 
     const res = await fetch(url).then((res) => res.json());
 
-    console.log(res.videos_analytics[1]);
+    console.log({res});
     
     if (res.videos_analytics[1].error) {
       setLoading(false);
@@ -109,8 +110,7 @@ export default function Home({ session }) {
           </div>
         </div> */}
 
-        {/* onSubmit={searchVideo}  */}
-        <form onSubmit={searchVideo}>
+        <form onSubmit={sendVideos}>
           <Input_video num={numVideo} />
           <button
             className="font-bold bg-black text-white px-8 py-2 rounded-lg hover:scale-105 transition-all duration-200 mt-5"
@@ -132,6 +132,8 @@ export default function Home({ session }) {
             <span className="">Add video</span>
           </button>
         </div>
+
+        {/* <SearchVideo /> */}
       </main>
 
       {/* CONTENT */}
@@ -153,3 +155,12 @@ export async function getServerSideProps(context) {
     },
   };
 }
+
+
+
+
+// curl \
+//   'https://youtube.googleapis.com/youtube/v3/search?part=snippet&forMine=true&key=AIzaSyBlkQVlN2VjTBTI1YuluGB4YY6DhKwEVhI' \
+//   --header 'Authorization: Bearer ya29.A0ARrdaM8MVRtF_H3TF5JmccbTpdKesrbiKnEwTchRwtE-OhYpI3W7a9Ke_3SbF2E9Vj2DzXRLZKFu9AsGZ8LgSsJS_wbntIlzUL-fVFE67xvBE0EhnHv1riYUswsbQWvg1RV6qoI3gzMOu2j3V-ATCuReJq3v' \
+//   --header 'Accept: application/json' \
+//   --compressed

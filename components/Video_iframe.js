@@ -17,18 +17,15 @@ function Video_iframe({ src, color }) {
   const [player, setPlayer] = useState();
   var checkPlaying;
 
-  console.log(player);
-
-  console.log({videoRef});
-  console.log(lineTimeChart);
+  console.log({player});
 
   useEffect(() => {
     player?.seekTo(lineTimeChart)
   }, [lineTimeChart])
 
-  // useEffect(() => {
-  //   console.log(playing);
-  // }, [playing]);
+  useEffect(() => {
+    console.log({playing});
+  }, [playing]);
 
   // window.setInterval(function () {
   //   setProgress((videoRef.current?.currentTime / videoTime) * 100);
@@ -64,7 +61,6 @@ function Video_iframe({ src, color }) {
   };
 
   const videoStateChange = (event) => {
-    console.log(event.data);
     let currentTime = event.target.playerInfo.currentTime;
     setVideoCurrentTime(currentTime);
 

@@ -1,6 +1,6 @@
 import Chart from "chart.js/auto";
 import { getRelativePosition } from "chart.js/helpers";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import { videoCurrentTimeState, videoTimeState, lineTimeChartState } from "../atoms/videoStateAtom";
 import moment from "moment";
@@ -22,7 +22,15 @@ function LineChart({
   );
   const [videoTime, setVideoTime] = useRecoilState(videoTimeState);
   const [lineTimeChart, setLineTimeChart] = useRecoilState(lineTimeChartState);
+  // const [graph, setGraph] = useState();
   // -------------------------------------------------------
+
+  useEffect(() => {
+    const graph = Chart.getChart(canvasEl.current.getContext("2d"))
+    graph?.config._config.options.plugins.timeLine.xPosition = videoCurrentTime;
+    graph?.update();
+
+  }, [videoCurrentTime])
 
   // --- Function for get the time (format) from seconds ---
   function convertHMSrString(time) {
@@ -117,8 +125,8 @@ function LineChart({
     matriz_2 = createMatriz(matriz_2, videoAnalytics[1], duration_2);
   }
 
-  console.log({ matriz });
-  console.log({ matriz_2 });
+  // console.log({ matriz });
+  // console.log({ matriz_2 });
   // -------------------------------------
 
   // --- CREATE THE GAPHICS AND INSERT ---
