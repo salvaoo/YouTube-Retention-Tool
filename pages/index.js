@@ -10,6 +10,7 @@ import RetentionTool from "../components/RetentionTool";
 import Notification from "../components/Notification"
 import { useRecoilState } from "recoil";
 import { notificationState } from "../atoms/notificationAtom";
+import Footer from "../components/Footer";
 
 export default function Home({ session }) {
 
@@ -137,6 +138,8 @@ export default function Home({ session }) {
       {videos ? <RetentionTool videos={videos} /> : ''}
 
       {notification ? notification : ''}
+
+      {videos ? <Footer /> : ''}
     </div>
   );
 }

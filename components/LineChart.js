@@ -1,8 +1,8 @@
 import Chart from "chart.js/auto";
-// import { getRelativePosition } from "chart.js/helpers";
+import { getRelativePosition } from "chart.js/helpers";
 import { useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
-import { videoCurrentTimeState, videoTimeState } from "../atoms/videoStateAtom";
+import { videoCurrentTimeState, videoTimeState, lineTimeChartState } from "../atoms/videoStateAtom";
 import moment from "moment";
 import "chartjs-adapter-moment";
 
@@ -12,6 +12,7 @@ function LineChart({
   duration,
   videoAnalytics,
   numVideos,
+  videoSelected,
   absoluteTime,
 }) {
   // --- VARS ---
@@ -20,6 +21,7 @@ function LineChart({
     videoCurrentTimeState
   );
   const [videoTime, setVideoTime] = useRecoilState(videoTimeState);
+  const [lineTimeChart, setLineTimeChart] = useRecoilState(lineTimeChartState);
   // -------------------------------------------------------
 
   // --- Function for get the time (format) from seconds ---
@@ -99,9 +101,6 @@ function LineChart({
       full_time_seconds = parseInt(duration_2);
     }
   }
-
-  console.log({ half_time_string });
-  console.log({ full_time_string });
   // -----------------------------------
 
   // --- Calculate values and params ---
@@ -126,8 +125,6 @@ function LineChart({
   useEffect(() => {
     // const ctx = canvasEl.current.getContext("2d");
     const ctx = document.getElementById("myChart");
-
-    console.log({ absoluteTime });
 
     const labels =
       numVideos === 1
@@ -181,9 +178,37 @@ function LineChart({
               },
             ],
     };
+    // ----------------------------------------------
 
-    console.log({ data });
+    // --- PLUGIN FOR DRAW THE TIME LINE ON CHART ---
+    const timeLine = {
+      id: "timeLine",
+      beforeDraw(chart, args, options) {
+        const {
+          ctx,
+          chartArea: { top, right, bottom, left, width, height },
+          scales: { x, y },
+        } = chart;
+        ctx.save();
 
+        ctx.strokeStyle = options.timeLineColor;
+        ctx.strokeRect(x.getPixelForValue(options.xPosition), top, 0, height);
+
+        ctx.restore();
+      },
+    };
+    // ----------------------------
+
+    // --- UPDATE THE LINE TIME ---
+    const updateLineTime = (myChart, position) => {
+      myChart.options.plugins.timeLine.xPosition = position;
+      myChart.update();
+      setVideoCurrentTime(position);
+      setLineTimeChart(parseInt(position))
+    };
+    // ------------------------
+
+    // --- SET CHART CONFIG ---
     const config = {
       type: "line",
       data: data,
@@ -193,6 +218,17 @@ function LineChart({
             display: true,
             text: numVideos === 1 ? "VIDEO ANALYTICS" : "VIDEOS ANALYTICS",
           },
+          timeLine: {
+            timeLineColor: numVideos === 1 ? color : color[videoSelected - 1],
+            xPosition: videoCurrentTime,
+          }
+        },
+        onClick: (e) => {
+          const canvasPosition = getRelativePosition(e, myLineChart);
+          const dataX = myLineChart.scales.x.getValueForPixel(canvasPosition.x);
+          const dataY = myLineChart.scales.y.getValueForPixel(canvasPosition.y);
+
+          updateLineTime(myLineChart, dataX);
         },
         scales: {
           x: {
@@ -234,13 +270,18 @@ function LineChart({
           },
         },
       },
+      plugins: [timeLine],
     };
+    // -----------------------------
+
+    // --- CREATE THE LINE CHART ---
     const myLineChart = new Chart(ctx, config);
 
     return function cleanup() {
       myLineChart.destroy();
     };
-  }, [absoluteTime, videoTime]);
+    // -----------------------------
+  }, [videoTime, absoluteTime]);
 
   return (
     <div>

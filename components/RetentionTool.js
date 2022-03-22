@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import LineChart from "./LineChart";
 import Video_iframe from "./Video_iframe";
 import { Switch } from "@headlessui/react";
+import { useRecoilState } from "recoil";
+import {
+  videoCurrentTimeState,
+} from "../atoms/videoStateAtom";
 
 const bg_colors = ["bg-red-400", "bg-cyan-400"];
 const bg_colors_rgb = ["rgb(248 113 113)", "rgb(34 211 238)"];
@@ -9,6 +13,12 @@ const bg_colors_rgb = ["rgb(248 113 113)", "rgb(34 211 238)"];
 function RetentionTool({ videos }) {
   const [videoSelected, setVideoSelected] = useState(1);
   const [enabledSW, setEnabledSW] = useState(false);
+  const [videoCurrentTime, setVideoCurrentTime] = useRecoilState(
+    videoCurrentTimeState);
+
+  useEffect(() => {
+    setVideoCurrentTime(0)
+  }, [videoSelected])
 
   const convertISO8601ToValues = (input) => {
     var reptms = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
@@ -60,7 +70,7 @@ function RetentionTool({ videos }) {
   }
 
   return (
-    <div className="m-auto py-24 px-16">
+    <div className="m-auto py-24 px-16 relative">
       {/* SELECT VIDEO */}
       <div className="flex justify-center items-center gap-20">
         <div className="flex-1">
@@ -129,6 +139,7 @@ function RetentionTool({ videos }) {
               ]
             }
             numVideos={videos.num}
+            videoSelected={videoSelected}
             absoluteTime={!enabledSW}
           />
         </div>
