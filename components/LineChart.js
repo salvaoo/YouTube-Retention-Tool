@@ -19,17 +19,19 @@ function LineChart({
   videoSelected,
   absoluteTime,
 }) {
+  // ------------
   // --- VARS ---
+  // ------------
   const canvasEl = useRef(null);
   const [videoCurrentTime, setVideoCurrentTime] = useRecoilState(
     videoCurrentTimeState
   );
   const [videoTime, setVideoTime] = useRecoilState(videoTimeState);
   const [lineTimeChart, setLineTimeChart] = useRecoilState(lineTimeChartState);
-  // const [graph, setGraph] = useState();
-  // -------------------------------------------------------
 
+  // -------------------------------------------------------
   // --- Function for get the time (format) from seconds ---
+  // -------------------------------------------------------
   function convertHMSrString(time) {
     const sec = parseInt(time, 10);
     let hours = Math.floor(sec / 3600); // get hours
@@ -48,8 +50,10 @@ function LineChart({
 
     return `${hours > 0 ? `${hours}:` : ""}${minutes}:${seconds}`;
   }
-  // -----------------------------------
 
+  // ----------------------------------------------------
+  // --- Function for create a matriz with video time ---
+  // ----------------------------------------------------
   const createMatriz = (matriz, v_analytics, v_time) => {
     // --- Create a 100% analytics matriz ---
     let analytics_percentage = [];
@@ -130,9 +134,10 @@ function LineChart({
 
   //   return matriz;
   // };
-  // ----------------------------------
 
+  // ----------------------------------
   // --- Set the X values for chart ---
+  // ----------------------------------
   let half_time_string = 0;
   let half_time_seconds = 0;
   let full_time_string = 0;
@@ -161,9 +166,10 @@ function LineChart({
       full_time_seconds = parseInt(duration_2);
     }
   }
-  // -----------------------------------
 
+  // -----------------------------------
   // --- Calculate values and params ---
+  // -----------------------------------
   let matriz = [];
   let matriz_2 = [];
 
@@ -177,11 +183,124 @@ function LineChart({
     matriz_2 = createMatriz(matriz_2, videoAnalytics[1], duration_2);
   }
 
-  // console.log({ matriz });
-  // console.log({ matriz_2 });
-  // -------------------------------------
+  // ----------------------
+  // --- Custom Tooltip ---
+  // ----------------------
+  const getOrCreateTooltip = (chart) => {
+    let tooltipEl = chart.canvas.parentNode.querySelector("div");
 
+    if (!tooltipEl) {
+      tooltipEl = document.createElement("div");
+      tooltipEl.style.background = "rgba(0, 0, 0, 0.7)";
+      tooltipEl.style.borderRadius = "3px";
+      tooltipEl.style.color = "white";
+      tooltipEl.style.opacity = 1;
+      tooltipEl.style.pointerEvents = "none";
+      tooltipEl.style.position = "absolute";
+      tooltipEl.style.transform = "translate(-50%, 0)";
+      tooltipEl.style.transition = "all .1s ease";
+
+      const table = document.createElement("table");
+      table.style.margin = "0px";
+
+      tooltipEl.appendChild(table);
+      chart.canvas.parentNode.appendChild(tooltipEl);
+    }
+
+    return tooltipEl;
+  };
+
+  const externalTooltipHandler = (context) => {
+    // Tooltip Element
+    const { chart, tooltip } = context;
+    const tooltipEl = getOrCreateTooltip(chart);
+
+    // Hide if no tooltip
+    if (tooltip.opacity === 0) {
+      tooltipEl.style.opacity = 0;
+      return;
+    }
+
+    // Set Text
+    if (tooltip.body) {
+      const titleLines = tooltip.title || [];
+      const bodyLines = tooltip.body.map((b) => b.lines);
+
+      const tableHead = document.createElement("thead");
+
+      titleLines.forEach((title) => {
+        const s_format =
+          videoTime >= 3600
+            ? moment.utc(title * 1000).format("HH:mm:ss")
+            : moment.utc(title * 1000).format("mm:ss");
+        const tr = document.createElement("tr");
+        tr.style.borderWidth = 0;
+
+        const th = document.createElement("th");
+        th.style.borderWidth = 0;
+        const text = document.createTextNode(s_format);
+
+        th.appendChild(text);
+        tr.appendChild(th);
+        tableHead.appendChild(tr);
+      });
+
+      const tableBody = document.createElement("tbody");
+      bodyLines.forEach((body, i) => {
+        const textArr = body[0].split(": ");
+        var b_value = textArr.pop();
+        const colors = tooltip.labelColors[i];
+
+        const span = document.createElement("span");
+        span.style.background = colors.backgroundColor;
+        span.style.borderColor = colors.borderColor;
+        span.style.borderWidth = "2px";
+        span.style.marginRight = "10px";
+        span.style.height = "10px";
+        span.style.width = "10px";
+        span.style.display = "inline-block";
+
+        const tr = document.createElement("tr");
+        tr.style.backgroundColor = "inherit";
+        tr.style.borderWidth = 0;
+
+        const td = document.createElement("td");
+        td.style.borderWidth = 0;
+
+        const text = document.createTextNode(`${b_value} %`);
+
+        td.appendChild(span);
+        td.appendChild(text);
+        tr.appendChild(td);
+        tableBody.appendChild(tr);
+      });
+
+      const tableRoot = tooltipEl.querySelector("table");
+
+      // Remove old children
+      while (tableRoot.firstChild) {
+        tableRoot.firstChild.remove();
+      }
+
+      // Add new children
+      tableRoot.appendChild(tableHead);
+      tableRoot.appendChild(tableBody);
+    }
+
+    const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
+
+    // Display, position, and set styles for font
+    tooltipEl.style.opacity = 1;
+    tooltipEl.style.left = positionX + tooltip.caretX + "px";
+    tooltipEl.style.top = positionY + tooltip.caretY + "px";
+    tooltipEl.style.font = tooltip.options.bodyFont.string;
+    tooltipEl.style.padding =
+      tooltip.options.padding + "px " + tooltip.options.padding + "px";
+  };
+
+  // -------------------------------------
   // --- CREATE THE GAPHICS AND INSERT ---
+  // -------------------------------------
   useEffect(() => {
     // const ctx = canvasEl.current.getContext("2d");
     const ctx = document.getElementById("myChart");
@@ -225,7 +344,7 @@ function LineChart({
                 pointRadius: 0,
                 borderWidth: 2,
                 spanGaps: false,
-                yAxisID: 'y',
+                yAxisID: "y",
               },
               {
                 label: videoName[1],
@@ -239,13 +358,14 @@ function LineChart({
                 pointRadius: 0,
                 borderWidth: 2,
                 spanGaps: false,
-                yAxisID: 'y',
+                yAxisID: "y",
               },
             ],
     };
-    // ----------------------------------------------
 
+    // ----------------------------------------------
     // --- PLUGIN FOR DRAW THE TIME LINE ON CHART ---
+    // ----------------------------------------------
     const timeLine = {
       id: "timeLine",
       beforeDraw(chart, args, options) {
@@ -262,25 +382,27 @@ function LineChart({
         ctx.restore();
       },
     };
-    // ----------------------------
 
+    // ----------------------------
     // --- UPDATE THE LINE TIME ---
+    // ----------------------------
     const updateLineTime = (myChart, position) => {
       myChart.options.plugins.timeLine.xPosition = position;
       myChart.update();
       setVideoCurrentTime(position);
       setLineTimeChart(parseInt(position));
     };
+    
     // ------------------------
-
     // --- SET CHART CONFIG ---
+    // ------------------------
     const config = {
       type: "line",
       data: data,
       options: {
         responsive: true,
         interaction: {
-          mode: 'index',
+          mode: "index",
           intersect: false,
         },
         stacked: false,
@@ -292,6 +414,11 @@ function LineChart({
           timeLine: {
             timeLineColor: numVideos === 1 ? color : color[videoSelected - 1],
             xPosition: videoCurrentTime,
+          },
+          tooltip: {
+            enabled: false,
+            position: "nearest",
+            external: externalTooltipHandler,
           },
         },
         onClick: (e) => {
@@ -333,34 +460,40 @@ function LineChart({
             },
           },
           y: {
-            type: 'linear',
+            type: "linear",
             title: {
               display: true,
               text: "Percentage (%)",
             },
-            position: 'left',
+            position: "left",
           },
         },
       },
       plugins: [timeLine],
     };
-    // -----------------------------
 
+    // -----------------------------
     // --- CREATE THE LINE CHART ---
+    // -----------------------------
     const myLineChart = new Chart(ctx, config);
 
     return function cleanup() {
       myLineChart.destroy();
     };
-    // -----------------------------
+
   }, [videoTime, absoluteTime]);
 
+  // -----------------------------------------------
+  // --- Change the Y line position (chart) when ---
+  // --- change the videoCurrentTime             ---
+  // -----------------------------------------------
   useEffect(() => {
     const graph = Chart.getChart(canvasEl.current.getContext("2d"));
     graph.config._config.options.plugins.timeLine.xPosition = videoCurrentTime;
     graph.update();
   }, [videoCurrentTime]);
 
+  
   return (
     <div>
       {/* <Line options={options} data={data} /> */}

@@ -3,6 +3,7 @@ import Notification from "./Notification";
 import { useRecoilState } from "recoil";
 import { notificationState } from "../atoms/notificationAtom";
 import ItemSearch from "./ItemSearch";
+import { signOut } from "next-auth/react";
 
 function SearchVideo() {
   const [loading, setLoading] = useState(false);
@@ -15,10 +16,6 @@ function SearchVideo() {
     setLoading(true);
 
     const q = event.target.qsearch.value;
-
-    // const url = `/api/youtube/video?id=${inputs[1]}${
-    //   numVideo === 2 ? `&id2=${inputs[2]}` : ""
-    // }`;
     const url = `/api/youtube/search?q=${q}`;
 
     const res_search = await fetch(url).then((res) => res.json());
@@ -26,16 +23,17 @@ function SearchVideo() {
     if (res_search.result.search.error) {
       setLoading(false);
       if (res_search.result.search.error.code === 401) {
-        setNotification(
-          <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">
-            <Notification
-              code={res_search.result.search.error.code}
-              message={res_search.result.search.error.errors[0].message}
-              reason={res_search.result.search.error.errors[0].reason}
-              recommended={`Log out and log in again`}
-            />
-          </ul>
-        );
+        signOut()
+        // setNotification(
+        //   <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">
+        //     <Notification
+        //       code={res_search.result.search.error.code}
+        //       message={res_search.result.search.error.errors[0].message}
+        //       reason={res_search.result.search.error.errors[0].reason}
+        //       recommended={`Log out and log in again`}
+        //     />
+        //   </ul>
+        // );
       }else {
         setNotification(
           <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">

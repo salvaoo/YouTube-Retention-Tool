@@ -14,3 +14,8 @@ export const lineTimeChartState = atom({
   key: "lineTimeChartState", 
   default: 0,
 })
+
+export const playingState = atom({
+  key: "playingState", 
+  default: false,
+})

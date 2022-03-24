@@ -5,6 +5,7 @@ import {
   videoCurrentTimeState,
   videoTimeState,
   lineTimeChartState,
+  playingState
 } from "../atoms/videoStateAtom";
 
 function Video_iframe({ src, color }) {
@@ -14,7 +15,7 @@ function Video_iframe({ src, color }) {
   );
   const [videoTime, setVideoTime] = useRecoilState(videoTimeState);
   const [lineTimeChart, setLineTimeChart] = useRecoilState(lineTimeChartState);
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useRecoilState(playingState);
   const [player, setPlayer] = useState();
 
   useEffect(() => {
@@ -33,10 +34,6 @@ function Video_iframe({ src, color }) {
     }
   }, [playing]);
 
-  // window.setInterval(function () {
-  //   setProgress((videoRef.current?.currentTime / videoTime) * 100);
-  // }, 1000);
-
   const opts = {
     height: "440",
     width: "720",
@@ -45,20 +42,6 @@ function Video_iframe({ src, color }) {
       autoplay: 0,
     },
   };
-
-  // const changeProgress = () => {
-  //   // console.log({ event });
-  //   //checks every 100ms to see if the video has reached 6s
-  //   checkPlaying = setInterval(function () {
-  //     console.log({ lineTimeChart });
-  //     if (playing) {
-  //       const ct = player.playerInfo.currentTime;
-  //       setProgress(ct);
-  //     } else {
-  //       clearInterval(checkPlaying);
-  //     }
-  //   }, 1000);
-  // };
 
   // --- PLAYER FUNCTIONS ---
   const videoReady = (e) => {

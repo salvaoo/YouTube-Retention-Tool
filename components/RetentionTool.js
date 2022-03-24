@@ -3,7 +3,7 @@ import LineChart from "./LineChart";
 import Video_iframe from "./Video_iframe";
 import { Switch } from "@headlessui/react";
 import { useRecoilState } from "recoil";
-import { videoCurrentTimeState } from "../atoms/videoStateAtom";
+import { videoCurrentTimeState, playingState } from "../atoms/videoStateAtom";
 
 const bg_colors = ["bg-red-400", "bg-cyan-400"];
 const bg_colors_rgb = ["rgb(248 113 113)", "rgb(34 211 238)"];
@@ -13,9 +13,12 @@ function RetentionTool({ videos }) {
   const [enabledSW, setEnabledSW] = useState(false);
   const [videoCurrentTime, setVideoCurrentTime] = useRecoilState(
     videoCurrentTimeState);
+  const [playing, setPlaying] = useRecoilState(playingState);
+
 
   useEffect(() => {
     setVideoCurrentTime(0)
+    setPlaying(false)
   }, [videoSelected])
 
   const convertISO8601ToValues = (input) => {
@@ -76,10 +79,6 @@ function RetentionTool({ videos }) {
           {select_video}
         </div>
         <div className="flex-1">
-          {/* <Video 
-          src={`https://www.youtube.com/watch?v=${videos.videos[videoSelected].items[0].id}`}
-          color={bg_colors[videoSelected-1]} 
-        /> */}
           <Video_iframe
             src={`${videos.videos[videoSelected].items[0].id}`}
             color={bg_colors[videoSelected - 1]}

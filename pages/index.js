@@ -165,9 +165,3 @@ export async function getServerSideProps(context) {
     },
   };
 }
-
-// curl \
-//   'https://youtube.googleapis.com/youtube/v3/search?part=snippet&forMine=true&key=AIzaSyBlkQVlN2VjTBTI1YuluGB4YY6DhKwEVhI' \
-//   --header 'Authorization: Bearer ya29.A0ARrdaM8MVRtF_H3TF5JmccbTpdKesrbiKnEwTchRwtE-OhYpI3W7a9Ke_3SbF2E9Vj2DzXRLZKFu9AsGZ8LgSsJS_wbntIlzUL-fVFE67xvBE0EhnHv1riYUswsbQWvg1RV6qoI3gzMOu2j3V-ATCuReJq3v' \
-//   --header 'Accept: application/json' \
-//   --compressed
