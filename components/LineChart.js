@@ -2,7 +2,11 @@ import Chart from "chart.js/auto";
 import { getRelativePosition } from "chart.js/helpers";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
-import { videoCurrentTimeState, videoTimeState, lineTimeChartState } from "../atoms/videoStateAtom";
+import {
+  videoCurrentTimeState,
+  videoTimeState,
+  lineTimeChartState,
+} from "../atoms/videoStateAtom";
 import moment from "moment";
 import "chartjs-adapter-moment";
 
@@ -46,24 +50,50 @@ function LineChart({
   }
   // -----------------------------------
 
-  // --- Function to create a matriz ---
   const createMatriz = (matriz, v_analytics, v_time) => {
-    let t_video = v_time / 100;
+    // --- Create a 100% analytics matriz ---
+    let analytics_percentage = [];
+    let j = 0;
+    for (let index = 1; index <= 100; index++) {
+      let exist = true;
+      const x = index / 100;
+      if (v_analytics[j][0] === x) {
+        analytics_percentage.push(v_analytics[j][1]);
+      } else {
+        analytics_percentage.push(0);
+        exist = false;
+      }
+      if (j < v_analytics.length - 1) {
+        if (exist) {
+          j++;
+        }
+      }
+    }
+
+    let t_video = v_time / 100 < 1 ? 1 : v_time / 100;
     let l = t_video;
     let row = 0;
     for (let index = 0; index < v_time; index++) {
       if (index <= l) {
         matriz.push({
           x: l,
-          y: v_analytics[row][1] >= 1 ? 100 : v_analytics[row][1] * 100,
+          y:
+            analytics_percentage[row] >= 1
+              ? 100
+              : analytics_percentage[row] * 100,
           percentage: `${row}%`,
         });
       } else {
         l = l + t_video;
         row++;
+        // if (row < v_analytics.length) {
+        // }
         matriz.push({
           x: l,
-          y: v_analytics[row][1] >= 1 ? 100 : v_analytics[row][1] * 100,
+          y:
+            analytics_percentage[row] >= 1
+              ? 100
+              : analytics_percentage[row] * 100,
           percentage: `${row}%`,
         });
       }
@@ -71,6 +101,35 @@ function LineChart({
 
     return matriz;
   };
+
+  // --- Function to create a matriz ---
+  // const createMatriz = (matriz, v_analytics, v_time) => {
+  //   // let t_video = v_time / 100;
+  //   let t_video = v_time / v_analytics.length;
+  //   let l = t_video;
+  //   let row = 0;
+  //   for (let index = 0; index < v_time; index++) {
+  //     if (index <= l) {
+  //       matriz.push({
+  //         x: l,
+  //         y: v_analytics[row][1] >= 1 ? 100 : v_analytics[row][1] * 100,
+  //         percentage: `${row}%`,
+  //       });
+  //     } else {
+  //       l = l + t_video;
+  //       row++;
+  //       // if (row < v_analytics.length) {
+  //       // }
+  //       matriz.push({
+  //         x: l,
+  //         y: v_analytics[row][1] >= 1 ? 100 : v_analytics[row][1] * 100,
+  //         percentage: `${row}%`,
+  //       });
+  //     }
+  //   }
+
+  //   return matriz;
+  // };
   // ----------------------------------
 
   // --- Set the X values for chart ---
@@ -143,13 +202,14 @@ function LineChart({
                 label: videoName,
                 borderColor: color,
                 backgroundColor: color,
-                tension: 0.3,
+                tension: 0.4,
                 data: matriz.map((value) => ({
                   x: value.x,
                   y: value.y,
                 })),
                 pointRadius: 0,
                 borderWidth: 2,
+                spanGaps: false,
               },
             ]
           : [
@@ -157,25 +217,29 @@ function LineChart({
                 label: videoName[0],
                 borderColor: color[0],
                 backgroundColor: color[0],
-                tension: 0.3,
+                tension: 0.4,
                 data: matriz.map((value) => ({
                   x: value.x,
                   y: value.y,
                 })),
                 pointRadius: 0,
                 borderWidth: 2,
+                spanGaps: false,
+                yAxisID: 'y',
               },
               {
                 label: videoName[1],
                 borderColor: color[1],
                 backgroundColor: color[1],
-                tension: 0.3,
+                tension: 0.4,
                 data: matriz_2.map((value) => ({
                   x: value.x,
                   y: value.y,
                 })),
                 pointRadius: 0,
                 borderWidth: 2,
+                spanGaps: false,
+                yAxisID: 'y',
               },
             ],
     };
@@ -205,7 +269,7 @@ function LineChart({
       myChart.options.plugins.timeLine.xPosition = position;
       myChart.update();
       setVideoCurrentTime(position);
-      setLineTimeChart(parseInt(position))
+      setLineTimeChart(parseInt(position));
     };
     // ------------------------
 
@@ -214,6 +278,12 @@ function LineChart({
       type: "line",
       data: data,
       options: {
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        stacked: false,
         plugins: {
           title: {
             display: true,
@@ -222,7 +292,7 @@ function LineChart({
           timeLine: {
             timeLineColor: numVideos === 1 ? color : color[videoSelected - 1],
             xPosition: videoCurrentTime,
-          }
+          },
         },
         onClick: (e) => {
           const canvasPosition = getRelativePosition(e, myLineChart);
@@ -237,7 +307,6 @@ function LineChart({
               color: "rgba(0, 0, 0, 0)",
             },
             ticks: {
-              // Include a dollar sign in the ticks
               callback: function (value, index, ticks) {
                 if (absoluteTime === true) {
                   if (index == 0) {
@@ -264,10 +333,12 @@ function LineChart({
             },
           },
           y: {
+            type: 'linear',
             title: {
               display: true,
               text: "Percentage (%)",
             },
+            position: 'left',
           },
         },
       },
@@ -285,11 +356,10 @@ function LineChart({
   }, [videoTime, absoluteTime]);
 
   useEffect(() => {
-    const graph = Chart.getChart(canvasEl.current.getContext("2d"))
+    const graph = Chart.getChart(canvasEl.current.getContext("2d"));
     graph.config._config.options.plugins.timeLine.xPosition = videoCurrentTime;
     graph.update();
-
-  }, [videoCurrentTime])
+  }, [videoCurrentTime]);
 
   return (
     <div>

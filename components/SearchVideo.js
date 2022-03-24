@@ -23,20 +23,31 @@ function SearchVideo() {
 
     const res_search = await fetch(url).then((res) => res.json());
 
-    // console.log({res_search});
-
     if (res_search.result.search.error) {
       setLoading(false);
-      setNotification(
-        <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">
-          <Notification
-            code={res_search.result.search.error.code}
-            message={res_search.result.search.error.errors[0].message}
-            reason={res_search.result.search.error.errors[0].reason}
-            recommended={``}
-          />
-        </ul>
-      );
+      if (res_search.result.search.error.code === 401) {
+        setNotification(
+          <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">
+            <Notification
+              code={res_search.result.search.error.code}
+              message={res_search.result.search.error.errors[0].message}
+              reason={res_search.result.search.error.errors[0].reason}
+              recommended={`Log out and log in again`}
+            />
+          </ul>
+        );
+      }else {
+        setNotification(
+          <ul className="fixed top-0 left-0 flex flex-col list-none	justify-end p-5">
+            <Notification
+              code={res_search.result.search.error.code}
+              message={res_search.result.search.error.errors[0].message}
+              reason={res_search.result.search.error.errors[0].reason}
+              recommended={``}
+            />
+          </ul>
+        );
+      }
     } else {
       setLoading(false);
       if (res_search.result.search.items.length === 0) {
@@ -55,8 +66,6 @@ function SearchVideo() {
       }
     }
   };
-
-  console.log({sVideos});
 
   return (
     <div className="relative">

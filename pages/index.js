@@ -52,8 +52,6 @@ export default function Home({ session }) {
 
     const res = await fetch(url).then((res) => res.json());
 
-    console.log({ res });
-
     if (res.videos_analytics[1].error) {
       setLoading(false);
       if (res.videos_analytics[1].error.code === 400) {

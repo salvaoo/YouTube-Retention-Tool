@@ -10,21 +10,27 @@ import {
 function Video_iframe({ src, color }) {
   const videoRef = useRef(null);
   const [videoCurrentTime, setVideoCurrentTime] = useRecoilState(
-    videoCurrentTimeState);
+    videoCurrentTimeState
+  );
   const [videoTime, setVideoTime] = useRecoilState(videoTimeState);
   const [lineTimeChart, setLineTimeChart] = useRecoilState(lineTimeChartState);
   const [playing, setPlaying] = useState(false);
   const [player, setPlayer] = useState();
-  var checkPlaying;
-
-  console.log({player});
 
   useEffect(() => {
-    player?.seekTo(lineTimeChart)
-  }, [lineTimeChart])
+    player?.seekTo(lineTimeChart);
+  }, [lineTimeChart]);
 
   useEffect(() => {
-    console.log({playing});
+    var move;
+    if (playing) {
+      move = setInterval(() => {
+        let realTime = player ? player?.getCurrentTime() : videoCurrentTime;
+        setVideoCurrentTime(realTime)
+      }, 100);
+    } else {
+      clearInterval(move);
+    }
   }, [playing]);
 
   // window.setInterval(function () {
@@ -32,8 +38,8 @@ function Video_iframe({ src, color }) {
   // }, 1000);
 
   const opts = {
-    height: "360",
-    width: "640",
+    height: "440",
+    width: "720",
     playerVars: {
       // https://developers.google.com/youtube/player_parameters
       autoplay: 0,
@@ -58,6 +64,7 @@ function Video_iframe({ src, color }) {
   const videoReady = (e) => {
     setVideoTime(e.target.getDuration());
     setPlayer(e.target);
+    setLineTimeChart(0)
   };
 
   const videoStateChange = (event) => {

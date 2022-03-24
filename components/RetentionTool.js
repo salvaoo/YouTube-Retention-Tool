@@ -3,9 +3,7 @@ import LineChart from "./LineChart";
 import Video_iframe from "./Video_iframe";
 import { Switch } from "@headlessui/react";
 import { useRecoilState } from "recoil";
-import {
-  videoCurrentTimeState,
-} from "../atoms/videoStateAtom";
+import { videoCurrentTimeState } from "../atoms/videoStateAtom";
 
 const bg_colors = ["bg-red-400", "bg-cyan-400"];
 const bg_colors_rgb = ["rgb(248 113 113)", "rgb(34 211 238)"];
