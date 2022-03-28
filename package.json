@@ -1,6 +1,6 @@
 {
-  "name": "vaxxed-doggos-youtube-tool",
-  "version": "0.1.0",
+  "name": "youtube-retention-tool-vd",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
