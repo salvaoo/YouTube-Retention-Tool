@@ -33,15 +33,33 @@ export default function Home({ session }) {
 
     let inputs = {};
     if (numVideo === 2) {
-      inputs = {
-        1: event.target.video_link_1.value.split("/")[3],
-        2: event.target.video_link_2.value.split("/")[3],
-      };
+      if (event.target.video_link_1.value.split("/")[3].includes('watch?v=')){
+        inputs[1] = event.target.video_link_1.value.split("/")[3].split('=')[1];
+      }else {
+        inputs[1] = event.target.video_link_1.value.split("/")[3];
+      }
+      if (event.target.video_link_2.value.split("/")[3].includes('watch?v=')){
+        inputs[2] = event.target.video_link_2.value.split("/")[3].split('=')[1];
+      }else {
+        inputs[2] = event.target.video_link_2.value.split("/")[3];
+      }
+      // inputs = {
+      //   1: event.target.video_link_1.value.split("/")[3],
+      //   2: event.target.video_link_2.value.split("/")[3],
+      // };
     } else {
-      inputs = {
-        1: event.target.video_link_1.value.split("/")[3],
-      };
+      if (event.target.video_link_1.value.split("/")[3].includes('watch?v=')){
+        inputs = {
+          1: event.target.video_link_1.value.split("/")[3].split('=')[1],
+        };
+      }else {
+        inputs = {
+          1: event.target.video_link_1.value.split("/")[3],
+        };
+      }
     }
+
+    console.log({inputs});
 
     // const url = `/api/youtube/video?id=${inputs[1]}${
     //   numVideo === 2 ? `&id2=${inputs[2]}` : ""

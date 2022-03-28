@@ -4,6 +4,7 @@ import Video_iframe from "./Video_iframe";
 import { Switch } from "@headlessui/react";
 import { useRecoilState } from "recoil";
 import { videoCurrentTimeState, playingState } from "../atoms/videoStateAtom";
+import Video from "./Video";
 
 const bg_colors = ["bg-red-400", "bg-cyan-400"];
 const bg_colors_rgb = ["rgb(248 113 113)", "rgb(34 211 238)"];
@@ -83,6 +84,10 @@ function RetentionTool({ videos }) {
             src={`${videos.videos[videoSelected].items[0].id}`}
             color={bg_colors[videoSelected - 1]}
           />
+          {/* <Video
+            src={`${videos.videos[videoSelected].items[0].id}`}
+            color={bg_colors[videoSelected - 1]}
+          /> */}
         </div>
       </div>
       {/* LINE CHART */}

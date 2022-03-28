@@ -23,14 +23,14 @@ function Video_iframe({ src, color }) {
   }, [lineTimeChart]);
 
   useEffect(() => {
-    var move;
     if (playing) {
-      move = setInterval(() => {
+      const move = setInterval(() => {
         let realTime = player ? player?.getCurrentTime() : videoCurrentTime;
         setVideoCurrentTime(realTime)
       }, 100);
-    } else {
-      clearInterval(move);
+      return () => {
+        clearInterval(move);
+      };
     }
   }, [playing]);
 
