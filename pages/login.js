@@ -7,7 +7,7 @@ import logo from "../public/youlogo.png";
 function login({ providers }) {
   
   return (
-    <div className="flex flex-col items-center bg-white min-h-screen w-full justify-center">
+    <div className="flex flex-col items-center bg-white min-h-screen w-full justify-center px-10">
       <Head 
         title="Login | YouTube Retention Tool"
         description_content="YouTube Retention Tool app"

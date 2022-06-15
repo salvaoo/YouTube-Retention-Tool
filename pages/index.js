@@ -124,7 +124,7 @@ export default function Home({ session }) {
 
       <User />
 
-      <main className={`${videos ? "hidden" : ""} text-center py-10 h-screen`}>
+      <main className={`${videos ? "hidden" : ""} text-center py-10 pt-28 md:pt-10 h-screen`}>
         <h1 className="text-4xl font-bold">YouTube Retention Tool</h1>
         <h3 className="text-xl my-4">Add your video links here:</h3>
 
@@ -151,9 +151,9 @@ export default function Home({ session }) {
             )}
           </button>
         </form>
-        <div className="mt-5 fixed bottom-5 right-5 group transition-all duration-300 hover:scale-105 z-10">
+        <div className={`mt-5 fixed bottom-5 right-5 group transition-all duration-300 ${numVideo < 2 && 'hover:scale-105'} z-10`}>
           <button
-            className="font-bold text-white bg-black p-3 rounded-lg mt-5 flex items-center gap-2"
+            className={`font-bold text-white bg-black p-3 rounded-lg mt-5 flex items-center gap-2 ${numVideo === 2 && 'opacity-50'}`}
             onClick={() => numVideo < 2 && setNumVideo(numVideo + 1)}
           >
             <HiPlus className="w-6 h-6" />
