@@ -59,7 +59,7 @@ export default function Home({ session }) {
       }
     }
 
-    console.log({inputs});
+    // console.log({inputs});
 
     // const url = `/api/youtube/video?id=${inputs[1]}${
     //   numVideo === 2 ? `&id2=${inputs[2]}` : ""
